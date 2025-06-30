@@ -754,10 +754,12 @@ GameObject:
   m_Component:
   - component: {fileID: 683727625}
   - component: {fileID: 683727624}
-  - component: {fileID: 683727623}
   - component: {fileID: 683727626}
   - component: {fileID: 683727628}
   - component: {fileID: 683727627}
+  - component: {fileID: 683727631}
+  - component: {fileID: 683727630}
+  - component: {fileID: 683727629}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -765,27 +767,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &683727623
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683727622}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7843df7730432c14ea39bb81a273b3a1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!212 &683727624
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -929,6 +910,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedX: 7
   _jumpForce: 500
+--- !u!114 &683727629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683727622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f22ae23bc21049c43b6fe8f7e77d6de3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &683727630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683727622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5caaa22cbad446b48a559a1bbca8f38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &683727631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683727622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b90eda05c0b5c4198fe4731d88e737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &745356561
 GameObject:
   m_ObjectHideFlags: 0
