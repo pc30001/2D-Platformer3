@@ -271,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 141989353}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.10560417, y: -0.6064, z: 0}
+  m_LocalPosition: {x: -0.10560417, y: -2.9864001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -496,7 +496,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.10560417, y: -0.6064, z: 0}
+  m_LocalPosition: {x: -0.10560417, y: -2.9864001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -760,6 +760,7 @@ GameObject:
   - component: {fileID: 683727631}
   - component: {fileID: 683727630}
   - component: {fileID: 683727629}
+  - component: {fileID: 683727632}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -828,7 +829,7 @@ Transform:
   m_GameObject: {fileID: 683727622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.52, y: -0.78, z: 0}
+  m_LocalPosition: {x: -7.52, y: -3.16, z: 0}
   m_LocalScale: {x: 5, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -893,8 +894,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.046444565, y: -0.15037067}
-  m_Size: {x: 0.29728153, y: 0.8237946}
+  m_Offset: {x: -0.061060812, y: 0.3991443}
+  m_Size: {x: 0.26804906, y: 0.84347034}
   m_Direction: 0
 --- !u!114 &683727628
 MonoBehaviour:
@@ -946,6 +947,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b90eda05c0b5c4198fe4731d88e737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &683727632
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683727622}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0e11b1c9891f6f743a11a6be68501ed8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &745356561
 GameObject:
   m_ObjectHideFlags: 0
