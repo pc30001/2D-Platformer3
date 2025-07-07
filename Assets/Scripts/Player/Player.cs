@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private PlayerAnimator _animator;
     private CollisionHandler _collisionHandler;
 
-    private Finish _finish;
+    private IInteractable _interactable;
 
     private void Awake()
     {
@@ -41,11 +41,11 @@ public class Player : MonoBehaviour
         if (_inputReader.GetIsJump() && _groudDetector.IsGround)
             _mover.Jump();
 
-        if (_inputReader.GetIsInteract() && _finish != null)
-            _finish.Interact();
+        if (_inputReader.GetIsInteract() && _interactable != null)
+            _interactable.Interact();
     }
-    private void OnFinishReached(Finish finish)
+    private void OnFinishReached(IInteractable finish)
     {
-        _finish = finish; 
+        _interactable = finish; 
     }
 }

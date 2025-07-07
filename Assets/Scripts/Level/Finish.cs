@@ -1,14 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class Finish : MonoBehaviour
+public class Finish : MonoBehaviour, IInteractable
 {
+
+    [SerializeField] public Switch[] _switches;
+
     public void Interact()
     {
-        gameObject.SetActive(false);
+        if (_switches.All(i => i.IsActive))
+        {
+            gameObject.SetActive(false);
+        }
     }
-
-   
 }
