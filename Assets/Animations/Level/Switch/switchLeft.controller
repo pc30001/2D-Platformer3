@@ -35,7 +35,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isOff
+    m_ConditionEvent: IsOff
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -9091316067818201926}
@@ -86,13 +86,13 @@ AnimatorController:
   m_Name: switchLeft
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: isOn
+  - m_Name: IsOn
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: isOff
+  - m_Name: IsOff
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -146,7 +146,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isOn
+    m_ConditionEvent: IsOn
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3171869363809683455}
@@ -179,7 +179,7 @@ AnimatorStateMachine:
     m_Position: {x: 230, y: 70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 821435832583165471}
-    m_Position: {x: 420, y: 140, z: 0}
+    m_Position: {x: 380, y: 140, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 5928582735849150504}

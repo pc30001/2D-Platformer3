@@ -44,8 +44,8 @@ public class Player : MonoBehaviour
         if (_inputReader.GetIsInteract() && _interactable != null)
             _interactable.Interact();
     }
-    private void OnFinishReached(IInteractable finish)
+    private void OnFinishReached(IInteractable interactable)
     {
-        _interactable = finish; 
+        _interactable = interactable; 
     }
 }
