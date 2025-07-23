@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -44,25 +41,16 @@ public class Enemy : MonoBehaviour
 
     private void ChangeTarget()
     {
-        //_wayPointIndex++;
-        //if (_wayPointIndex >= _wayPoints.Length)
-        //    _wayPointIndex = 0;
-
         _wayPointIndex = ++_wayPointIndex % _wayPoints.Length;
         _target = _wayPoints[_wayPointIndex].transform;
 
         if ((transform.position.x < _target.position.x && _isTurnRight == false)
          || (transform.position.x > _target.position.x && _isTurnRight))
         {
-            Flip();
+            _isTurnRight = !_isTurnRight;
+            transform.Flip();
         }
     }
 
-    private void Flip()
-    {
-        _isTurnRight = !_isTurnRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
-    }
+
 }
