@@ -6,12 +6,15 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private WayPoint[] _wayPoints;
     [SerializeField] private float _speedX = 1;
+    [SerializeField] private float _maxSqrDistance = 0.44f;
+    [SerializeField] private float _waitTime = 2f;
 
     private Rigidbody2D _rigibody;
     private bool _isTurnRight = true;
     private int _wayPointIndex;
     private Transform _target;
-    [SerializeField] private float _maxSqrDistance = 0.1f;
+    private bool _isWaiting = true;
+    private float _endWaitTime;
 
     private void Start()
     {
@@ -21,10 +24,20 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_isWaiting == false)
         Move();
 
-        if (IsTargetReached())
+        if (IsTargetReached() && _isWaiting == false)
+        {
+            _isWaiting = true;
+            _endWaitTime = Time.time + _waitTime;
+        }
+
+        if(_isWaiting && _endWaitTime <= Time.time)
+        { 
             ChangeTarget();
+            _isWaiting=false;
+        }
     }
 
     private void Move()
