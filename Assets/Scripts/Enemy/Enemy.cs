@@ -26,20 +26,14 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Collider2D hit = Physics2D.OverlapBox(GetLookAreaOrigin(), _seeAreaSize, 0, _targetLayer);
-        if (hit != null)
-        {
-            Debug.Log(hit.gameObject.name);
-
-            Vector2 direction = (hit.transform.position - transform.position).normalized;
-            RaycastHit2D hit2D = Physics2D.Raycast(transform.position, direction, _seeAreaSize.x, ~(1 << gameObject.layer));
-
-            if(hit2D.collider != null) 
-            Debug.Log(hit2D.collider.gameObject.name);
+        if (TrySeeTarget(out Transform target))
+        { 
+            Move(target);
+            return;
         }
 
         if (_isWaiting == false)
-            Move();
+            Move(_target);
 
         if (IsTargetReached() && _isWaiting == false)
         {
@@ -54,7 +48,37 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Move()
+    private bool TrySeeTarget(out Transform target)
+    {
+        target = null;
+        Collider2D hit = Physics2D.OverlapBox(GetLookAreaOrigin(), _seeAreaSize, 0, _targetLayer);
+        if (hit != null)
+        {
+
+
+            Vector2 direction = (hit.transform.position - transform.position).normalized;
+            RaycastHit2D hit2D = Physics2D.Raycast(transform.position, direction, _seeAreaSize.x, ~(1 << gameObject.layer));
+
+            if (hit2D.collider != null)
+            {
+                if (hit2D.collider == hit)
+                {
+                    Debug.DrawLine(transform.position, hit2D.point, Color.red);
+                    target = hit2D.transform;
+                    return true;
+                }
+                else
+                {
+                    Debug.DrawLine(transform.position, hit2D.point, Color.white);
+                }
+            }
+
+
+        }
+        return false;
+    }
+
+    private void Move(Transform target)
     {
         Vector2 newPosition = Vector2.MoveTowards(transform.position, _target.position, _speedX * Time.fixedDeltaTime);
         _rigibody.MovePosition(newPosition);
