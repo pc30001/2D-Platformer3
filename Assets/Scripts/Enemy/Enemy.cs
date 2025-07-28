@@ -29,6 +29,8 @@ public class Enemy : MonoBehaviour
         Collider2D hit = Physics2D.OverlapBox(GetLookAreaOrigin(), _seeAreaSize, 0, _targetLayer);
         if (hit != null)
         {
+            Debug.Log(hit.gameObject.name);
+
             Vector2 direction = (hit.transform.position - transform.position).normalized;
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, direction, _seeAreaSize.x, ~(1 << gameObject.layer));
 
