@@ -62,3 +62,18 @@ public class Enemy : MonoBehaviour
       _fliper.LookAtTarget(_target.position);
     }
 }
+
+class StateMachine
+{
+
+}
+
+class State
+{
+
+}
+
+class Transition
+{
+
+}
