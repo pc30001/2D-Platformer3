@@ -10,58 +10,20 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _maxSqrDistance = 0.44f;
     [SerializeField] private float _waitTime = 2f;
 
-    private Fliper _fliper;
-    private EnemyVision _vision;
-    private Mover _mover;
-    private int _wayPointIndex;
-    private Transform _target;
-    private bool _isWaiting = false;
-    private float _endWaitTime;
+    private EnemyStateMachine _stateMachine;
 
     private void Start()
     {
-        _fliper = GetComponent<Fliper>();
-        _vision = GetComponent<EnemyVision>();
-        _mover = GetComponent<Mover>();
-        _target = _wayPoints[_wayPointIndex].transform;
+        var fliper = GetComponent<Fliper>();
+        var vision = GetComponent<EnemyVision>();
+        var mover = GetComponent<Mover>();
+
+        _stateMachine = new EnemyStateMachine(fliper, mover, vision, _wayPoints, _maxSqrDistance, transform, _waitTime);
     }
 
     private void FixedUpdate()
     {
-        if (_vision.TrySeeTarget(out Transform target))
-        {
-            _mover.Move(target);
-            return;
-        }
-
-        if (_isWaiting == false)
-            _mover.Move(_target);
-
-        if (IsTargetReached() && _isWaiting == false)
-        {
-            _isWaiting = true;
-            _endWaitTime = Time.time + _waitTime;
-        }
-
-        if (_isWaiting && _endWaitTime <= Time.time)
-        {
-            ChangeTarget();
-            _isWaiting = false;
-        }
-    }
-
-    private bool IsTargetReached()
-    {
-        float sqrDistance = (transform.position - _target.position).sqrMagnitude;
-        return sqrDistance < _maxSqrDistance;
-    }
-
-    private void ChangeTarget()
-    {
-        _wayPointIndex = ++_wayPointIndex % _wayPoints.Length;
-        _target = _wayPoints[_wayPointIndex].transform;
-
-        _fliper.LookAtTarget(_target.position);
+        _stateMachine.Update();
     }
 }
 
@@ -98,11 +60,22 @@ abstract class State
     protected Transition[] Transitions;
 
     protected State(StateMachine stateMachine) { }
-   
+
     public virtual void Enter() { }
     public virtual void Exit() { }
     public virtual void Update() { }
-    public abstract bool TryTransit();
+
+    public virtual void TryTransit()
+    {
+        foreach (Transition transition in Transitions)
+        {
+            if (transition.IsNeedTransit())
+            {
+                transition.Transit();
+                return;
+            }
+        }
+    }
 }
 
 abstract class Transition
@@ -114,24 +87,182 @@ abstract class Transition
         StateMachine = stateMachine;
     }
 
-    public abstract Type IsNeedTransit();
+    public abstract bool IsNeedTransit();
 
-    public abstract bool Transit();
+    public abstract void Transit();
 }
 
-class EnemyStateMachine: StateMachine { }
+class EnemyStateMachine : StateMachine
+{
+    public EnemyStateMachine(Fliper fliper, Mover mover, EnemyVision vision, WayPoint[] wayPoints, 
+                            float maxSqrDistance, Transform transform, float waitTime)
+    {
+        States = new Dictionary<Type, State>()
+        {
+            {typeof(PatrolState), new PatrolState(this, fliper, mover, vision, wayPoints, maxSqrDistance, transform) },
+            {typeof(IdleState), new IdleState(this, vision, waitTime) },
+            {typeof(FollowState), new FollowState(this, fliper, mover, vision) }
+        };
 
-class PatrolState : State { }
+        ChangeState<PatrolState>();
+    }
+}
 
-class IdleState : State { }
+class PatrolState : State
+{
+    private WayPoint[] _wayPoints;
+    private Fliper _fliper;
+    private Mover _mover;
+    private int _wayPointIndex;
+    private Transform _target;
 
-class FollowState : State { }
+    public PatrolState(StateMachine stateMachine, Fliper fliper, Mover mover, EnemyVision vision,
+                        WayPoint[] wayPoints, float maxSqrDistance, Transform transform) : base(stateMachine)
+    {
+        _fliper = fliper;
+        _mover = mover;
+        _wayPoints = wayPoints;
+        _wayPointIndex = -1;
 
-class SeeTargetTransition : Transition { }
+        Transitions = new Transition[]
+        {
+             new SeeTargetTransition(stateMachine, vision),
+             new TargetReachedTransition(stateMachine, this, maxSqrDistance, transform)
+        };
+    }
 
-class LostTargetTransition : Transition { }
+    public Transform Target => _target;
 
-class EndIdleTargetTransition : Transition { }
+    public override void Enter()
+    {
+        ChangeTarget();
+    }
 
-class TargetReachedTransition : Transition { }
+    public override void Update()
+    {
+        _mover.Move(_target);
+    }
+
+    private void ChangeTarget()
+    {
+        _wayPointIndex = ++_wayPointIndex % _wayPoints.Length;
+        _target = _wayPoints[_wayPointIndex].transform;
+
+        _fliper.LookAtTarget(_target.position);
+    }
+}
+
+class IdleState : State
+{
+    private float _endWaitTime;
+    private float _waitTime;
+
+    public IdleState(StateMachine stateMachine, EnemyVision vision, float waitTime) : base(stateMachine)
+    {
+        _waitTime = waitTime;
+
+        Transitions = new Transition[]
+        {
+            new SeeTargetTransition(stateMachine, vision),
+            new EndIdleTransition(stateMachine, this)
+        };
+    }
+
+    public bool IsEndWait => _endWaitTime <= Time.time;
+
+    public override void Enter()
+    {
+        _endWaitTime = Time.time + _waitTime;
+    }
+}
+
+class FollowState : State
+{
+    private EnemyVision _vision;
+    private Transform _target;
+    private Mover _mover;
+    private Fliper _fliper;
+
+    public FollowState(StateMachine stateMachine, Fliper fliper, Mover mover, EnemyVision vision) : base(stateMachine)
+    {
+        _vision = vision;
+        _mover = mover;
+        _fliper = fliper;
+
+        Transitions = new Transition[]
+       {
+             new LostTargetTransition(stateMachine, vision)
+
+       };
+    }
+    public override void Enter()
+    {
+        _vision.TrySeeTarget(out _target);
+    }
+    public override void Update()
+    {
+        if (_target != null)
+        {
+            _mover.Move(_target);
+            _fliper.LookAtTarget(_target.position);
+        }
+    }
+}
+
+class SeeTargetTransition : Transition
+{
+    private EnemyVision _vision;
+
+    public SeeTargetTransition(StateMachine stateMachine, EnemyVision vision) : base(stateMachine) => _vision = vision;
+
+    public override bool IsNeedTransit() => _vision.TrySeeTarget(out Transform _);
+
+    public override void Transit() => StateMachine.ChangeState<FollowState>();
+}
+
+class LostTargetTransition : Transition
+{
+    private EnemyVision _vision;
+
+    public LostTargetTransition(StateMachine stateMachine, EnemyVision vision) : base(stateMachine) => _vision = vision;
+
+    public override bool IsNeedTransit() => _vision.TrySeeTarget(out Transform _) == false;
+
+    public override void Transit() => StateMachine.ChangeState<IdleState>();
+}
+
+class EndIdleTransition : Transition
+{
+    private IdleState _idleState;
+
+    public EndIdleTransition(StateMachine stateMachine, IdleState idleState) : base(stateMachine) => _idleState = idleState;
+
+    public override bool IsNeedTransit() => _idleState.IsEndWait;
+
+
+    public override void Transit() => StateMachine.ChangeState<PatrolState>();
+}
+
+class TargetReachedTransition : Transition
+{
+    private PatrolState _patrolState;
+    private float _maxSqrDistance = 0.44f;
+    private Transform _transform;
+
+    public TargetReachedTransition(StateMachine stateMachine, PatrolState patrolState, float maxSqrDistance, Transform transform) : base(stateMachine)
+    {
+        _patrolState = patrolState;
+        _maxSqrDistance = maxSqrDistance;
+        _transform = transform;
+    }
+
+    public override bool IsNeedTransit()
+    {
+        float sqrDistance = (_transform.position - _patrolState.Target.position).sqrMagnitude;
+
+        return sqrDistance < _maxSqrDistance;
+    }
+
+    public override void Transit() => StateMachine.ChangeState<IdleState>();
+}
 
