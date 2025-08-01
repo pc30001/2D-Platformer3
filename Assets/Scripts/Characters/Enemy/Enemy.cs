@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +48,7 @@ abstract class StateMachine
 
         if (States.TryGetValue(typeof(Tstate), out State newState))
         {
-            CurrentState.Exit();
+            CurrentState?.Exit();
             CurrentState = newState;
             CurrentState.Enter();
         }
@@ -94,7 +94,7 @@ abstract class Transition
 
 class EnemyStateMachine : StateMachine
 {
-    public EnemyStateMachine(Fliper fliper, Mover mover, EnemyVision vision, WayPoint[] wayPoints, 
+    public EnemyStateMachine(Fliper fliper, Mover mover, EnemyVision vision, WayPoint[] wayPoints,
                             float maxSqrDistance, Transform transform, float waitTime)
     {
         States = new Dictionary<Type, State>()
