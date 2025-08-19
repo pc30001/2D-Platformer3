@@ -7,6 +7,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private WayPoint[] _wayPoints;
+    [SerializeField] private Animator _animator;
     [SerializeField] private float _maxSqrDistance = 0.44f;
     [SerializeField] private float _waitTime = 2f;
 
@@ -18,7 +19,7 @@ public class Enemy : MonoBehaviour
         var vision = GetComponent<EnemyVision>();
         var mover = GetComponent<Mover>();
 
-        _stateMachine = new EnemyStateMachine(fliper, mover, vision, _wayPoints, _maxSqrDistance, transform, _waitTime);
+        _stateMachine = new EnemyStateMachine(fliper, mover, vision, _animator, _wayPoints, _maxSqrDistance, transform, _waitTime);
     }
 
     private void FixedUpdate()
@@ -94,14 +95,14 @@ abstract class Transition
 
 class EnemyStateMachine : StateMachine
 {
-    public EnemyStateMachine(Fliper fliper, Mover mover, EnemyVision vision, WayPoint[] wayPoints,
+    public EnemyStateMachine(Fliper fliper, Mover mover, EnemyVision vision, Animator animator, WayPoint[] wayPoints,
                             float maxSqrDistance, Transform transform, float waitTime)
     {
         States = new Dictionary<Type, State>()
         {
-            {typeof(PatrolState), new PatrolState(this, fliper, mover, vision, wayPoints, maxSqrDistance, transform) },
+            {typeof(PatrolState), new PatrolState(this, animator, fliper, mover, vision, wayPoints, maxSqrDistance, transform) },
             {typeof(IdleState), new IdleState(this, vision, waitTime) },
-            {typeof(FollowState), new FollowState(this, fliper, mover, vision) }
+            {typeof(FollowState), new FollowState(this, animator, fliper, mover, vision) }
         };
 
         ChangeState<PatrolState>();
@@ -111,14 +112,16 @@ class EnemyStateMachine : StateMachine
 class PatrolState : State
 {
     private WayPoint[] _wayPoints;
+    private Animator _animator;
     private Fliper _fliper;
     private Mover _mover;
     private int _wayPointIndex;
     private Transform _target;
 
-    public PatrolState(StateMachine stateMachine, Fliper fliper, Mover mover, EnemyVision vision,
+    public PatrolState(StateMachine stateMachine, Animator animator, Fliper fliper, Mover mover, EnemyVision vision,
                         WayPoint[] wayPoints, float maxSqrDistance, Transform transform) : base(stateMachine)
     {
+        _animator = animator;
         _fliper = fliper;
         _mover = mover;
         _wayPoints = wayPoints;
@@ -136,6 +139,12 @@ class PatrolState : State
     public override void Enter()
     {
         ChangeTarget();
+        _animator.SetBool(ConstantsData.AnimatorParameters.IsWalk, true);
+    }
+
+    public override void Exit()
+    {
+        _animator.SetBool(ConstantsData.AnimatorParameters.IsWalk, false);
     }
 
     public override void Update()
@@ -182,12 +191,14 @@ class FollowState : State
     private Transform _target;
     private Mover _mover;
     private Fliper _fliper;
+    private Animator _animator;
 
-    public FollowState(StateMachine stateMachine, Fliper fliper, Mover mover, EnemyVision vision) : base(stateMachine)
+    public FollowState(StateMachine stateMachine, Animator animator, Fliper fliper, Mover mover, EnemyVision vision) : base(stateMachine)
     {
         _vision = vision;
         _mover = mover;
         _fliper = fliper;
+        _animator = animator;
 
         Transitions = new Transition[]
        {
@@ -198,7 +209,14 @@ class FollowState : State
     public override void Enter()
     {
         _vision.TrySeeTarget(out _target);
+        _animator.SetBool(ConstantsData.AnimatorParameters.IsRun, true);
     }
+
+    public override void Exit()
+    {
+        _animator.SetBool(ConstantsData.AnimatorParameters.IsRun,false);
+    }
+
     public override void Update()
     {
         if (_target != null)

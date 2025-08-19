@@ -30,8 +30,6 @@ public class EnemyVision : MonoBehaviour
 
         if (hit != null)
         {
-
-
             Vector2 direction = (hit.transform.position - transform.position).normalized;
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, direction, _seeAreaSize.x, ~(1 << gameObject.layer));
 
@@ -48,7 +46,6 @@ public class EnemyVision : MonoBehaviour
                     Debug.DrawLine(transform.position, hit2D.point, Color.white);
                 }
             }
-
 
         }
         return false;
