@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerAnimator), typeof(CollisionHandler), typeof(Fliper))]
 public class Player : MonoBehaviour
 {
+    [SerializeField] private int _maxHealth = 100;
+
     private InputReader _inputReader;
     private Mover _mover;
     private GroudDetector _groudDetector;
@@ -13,8 +15,12 @@ public class Player : MonoBehaviour
 
     private IInteractable _interactable;
 
+    private Health _health;
+
     private void Awake()
     {
+        _health = new Health(_maxHealth);
+
         _inputReader = GetComponent<InputReader>();
         _groudDetector = GetComponent<GroudDetector>();
         _mover = GetComponent<Mover>();
@@ -52,5 +58,16 @@ public class Player : MonoBehaviour
     private void OnFinishReached(IInteractable interactable)
     {
         _interactable = interactable; 
+    }
+
+    public void ApplyDamage(int damage)
+    {
+        _health.ApplyDamage(damage);
+    }
+    public void Heal(int value)
+    {
+        _health.Heal(value);
+
+
     }
 }
