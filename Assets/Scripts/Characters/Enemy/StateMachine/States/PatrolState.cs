@@ -10,7 +10,7 @@ class PatrolState : State, IMoveState
     private Transform _target;
 
     public PatrolState(StateMachine stateMachine, Animator animator, Fliper fliper, Mover mover, EnemyVision vision,
-                        WayPoint[] wayPoints, float maxSqrDistance, Transform transform) : base(stateMachine)
+                        WayPoint[] wayPoints, float maxSqrDistance, Transform transform, float sqrAttackDistance) : base(stateMachine)
     {
         _animator = animator;
         _fliper = fliper;
@@ -23,7 +23,7 @@ class PatrolState : State, IMoveState
 
         Transitions = new Transition[]
         {
-             new SeeTargetTransition(stateMachine, vision),
+             new SeeTargetTransition(stateMachine, vision, transform, sqrAttackDistance),
             targetReachedTransition
         };
 

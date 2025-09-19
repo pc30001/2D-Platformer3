@@ -8,7 +8,8 @@ class FollowState : State, IMoveState
     private Fliper _fliper;
     private Animator _animator;
 
-    public FollowState(StateMachine stateMachine, Animator animator, Fliper fliper, Mover mover, EnemyVision vision, float tryFindTime) : base(stateMachine)
+    public FollowState(StateMachine stateMachine, Animator animator, Fliper fliper, Mover mover, 
+        EnemyVision vision, float tryFindTime, float sqrAttackDistance) : base(stateMachine)
     {
         _vision = vision;
         _mover = mover;
@@ -17,13 +18,12 @@ class FollowState : State, IMoveState
 
         Transitions = new Transition[]
        {
-             new LostTargetTransition(stateMachine, vision, tryFindTime)
-
-       };
+            new LostTargetTransition(stateMachine, vision, tryFindTime),
+            new TargetReachedTransition(stateMachine, this, sqrAttackDistance, _mover.transform)
+    };
     }
 
     public Transform Target => _target;
-
 
     public override void Enter()
     {
@@ -33,7 +33,7 @@ class FollowState : State, IMoveState
 
     public override void Exit()
     {
-        _animator.SetBool(ConstantsData.AnimatorParameters.IsRun,false);
+        _animator.SetBool(ConstantsData.AnimatorParameters.IsRun, false);
     }
 
     public override void Update()

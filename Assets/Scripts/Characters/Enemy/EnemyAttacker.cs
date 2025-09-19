@@ -13,6 +13,8 @@ public class EnemyAttacker : MonoBehaviour
 
     private Fliper _fliper;
 
+    public float SqrAttackDistance => _offsetX * _offsetX;
+
     private void Start()
     {
         _fliper = GetComponent<Fliper>();

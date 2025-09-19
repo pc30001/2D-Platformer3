@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 
-class WayPointReachedTransition : Transition
+class WayPointReachedTransition : ReachedTransition
 {
-    
 
-    public WayPointReachedTransition(StateMachine stateMachine, IMoveState moveState, float maxSqrDistance, Transform transform) : base(stateMachine)
-    {
-     
-    }
+    public WayPointReachedTransition(StateMachine stateMachine, IMoveState moveState, float maxSqrDistance, Transform transform) :
+                base(stateMachine, moveState, maxSqrDistance, transform)
+    { }
 
     public override void Transit()
     {
@@ -35,18 +33,14 @@ class ReachedTransition : Transition
 
         return sqrDistance < _maxSqrDistance;
     }
-
-  
 }
 
-class TargetReachedTransition : Transition
+class TargetReachedTransition : ReachedTransition
 {
-   
 
-    public TargetReachedTransition(StateMachine stateMachine, IMoveState moveState, float maxSqrDistance, Transform transform) : base(stateMachine)
-    {
-       
-    }
+    public TargetReachedTransition(StateMachine stateMachine, IMoveState moveState, float maxSqrDistance, Transform transform) :
+        base(stateMachine, moveState, maxSqrDistance, transform)
+    { }
 
     public override void Transit()
     {
