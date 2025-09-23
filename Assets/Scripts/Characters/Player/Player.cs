@@ -2,6 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(InputReader), typeof(GroudDetector), typeof(Mover))]
 [RequireComponent(typeof(PlayerAnimator), typeof(CollisionHandler), typeof(Fliper))]
+[RequireComponent(typeof(PlayerAttacker))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private int _maxHealth = 100;
@@ -10,6 +11,7 @@ public class Player : MonoBehaviour
     private Mover _mover;
     private GroudDetector _groudDetector;
     private PlayerAnimator _animator;
+    private PlayerAttacker _attacker;
     private CollisionHandler _collisionHandler;
     private Fliper _fliper;
 
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour
         _groudDetector = GetComponent<GroudDetector>();
         _mover = GetComponent<Mover>();
         _animator = GetComponent<PlayerAnimator>();
+        _attacker = GetComponent<PlayerAttacker>();
         _collisionHandler = GetComponent<CollisionHandler>();
         _fliper = GetComponent<Fliper>();
     }
@@ -52,22 +55,28 @@ public class Player : MonoBehaviour
         if (_inputReader.GetIsJump() && _groudDetector.IsGround)
             _mover.Jump();
 
+        if (_inputReader.GetIsAttack() && _attacker.CanAttack)
+        {
+            _attacker.Attack();
+            _animator.SetAttackTrigger();
+        }
         if (_inputReader.GetIsInteract() && _interactable != null)
             _interactable.Interact();
     }
-    private void OnFinishReached(IInteractable interactable)
-    {
-        _interactable = interactable; 
-    }
+    
 
     public void ApplyDamage(int damage)
     {
         _health.ApplyDamage(damage);
+      //  Debug.Log(_health.Value);
     }
     public void Heal(int value)
     {
         _health.Heal(value);
+    }
 
-
+    private void OnFinishReached(IInteractable interactable)
+    {
+        _interactable = interactable;
     }
 }

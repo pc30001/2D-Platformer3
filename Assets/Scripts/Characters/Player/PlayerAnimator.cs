@@ -8,4 +8,9 @@ public class PlayerAnimator : MonoBehaviour
     {
         _animator.SetFloat(ConstantsData.AnimatorParameters.SpeedX, Mathf.Abs(speedX));
     }
+
+    public void SetAttackTrigger()
+    {
+        _animator.SetTrigger(ConstantsData.AnimatorParameters.IsAttack);
+    }
 }

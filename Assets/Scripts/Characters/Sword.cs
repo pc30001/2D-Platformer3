@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Sword : MonoBehaviour
 {
+  //  private bool _isAttack;
+
     [SerializeField] private int _damage;
 
   public bool IsAttack {  get; private set; }
@@ -11,8 +13,8 @@ public class Sword : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (IsAttack && collision.TryGetComponent(out Enemy enemy))
-           // Debug.Log("hit");
-        enemy.ApplyDamage(_damage);
+            // Debug.Log("hit");
+            enemy.ApplyDamage(_damage);
     }
 
     public void Attack()
