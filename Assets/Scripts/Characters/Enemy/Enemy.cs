@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 [RequireComponent(typeof(Fliper), typeof(EnemyVision), typeof(Mover))]
@@ -10,16 +9,22 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private WayPoint[] _wayPoints;
     [SerializeField] private Animator _animator;
+    [SerializeField] private EnemyAnimationEvent _animationEvent;
+
     [SerializeField] private float _maxSqrDistance = 0.44f;
     [SerializeField] private float _waitTime = 2f;
     [SerializeField] private float _tryFindTime = 1f;
 
     private Health _health;
+    private EnemyAttacker _attacker;
     private EnemyStateMachine _stateMachine;
 
     private void Awake()
     {
         _health = new Health(_maxHealth);
+        _attacker = GetComponent<EnemyAttacker>();
+        _animationEvent.Attack += _attacker.Attack;
+        _animationEvent.EndAttack += _attacker.OnEndAttack;
     }
 
     private void Start()
@@ -27,9 +32,9 @@ public class Enemy : MonoBehaviour
         var fliper = GetComponent<Fliper>();
         var vision = GetComponent<EnemyVision>();
         var mover = GetComponent<Mover>();
-        var attacker = GetComponent<EnemyAttacker>();
+        
 
-        _stateMachine = new EnemyStateMachine(fliper, mover, vision, _animator, attacker, _wayPoints, _maxSqrDistance, transform, 
+        _stateMachine = new EnemyStateMachine(fliper, mover, vision, _animator, _attacker, _wayPoints, _maxSqrDistance, transform, 
             _waitTime,  _tryFindTime);
     }
 
@@ -38,6 +43,12 @@ public class Enemy : MonoBehaviour
         _stateMachine.Update();
     }
 
+    private void OnDestroy()
+    {
+        _animationEvent.Attack -= _attacker.Attack;
+        _animationEvent.EndAttack -= _attacker.OnEndAttack;
+
+    }
     public void ApplyDamage(int damage)
     {
         _health.ApplyDamage(damage);
