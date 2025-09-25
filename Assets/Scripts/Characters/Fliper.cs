@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fliper : MonoBehaviour
 {
-    public bool IsTurnRight { get; private set; } = true;
+    public bool IsTurnRight { get; private set; } = false;
 
     public void LookAtTarget(Vector2 targetPosition)
     { 
