@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Fliper))]
 
 public class EnemyAttacker : MonoBehaviour
 {
-
     [SerializeField] private float  _delay = 4;
     [SerializeField] private int _damage;
     [SerializeField] private float _radius;
@@ -52,11 +49,9 @@ public class EnemyAttacker : MonoBehaviour
     {
         IsAttack = true;
         _endWaitTime = Time.time + _delay;
-
     }
 
     public void OnEndAttack() => IsAttack = false;
-
 
     private Vector2 GetAttackOrigin()
     {
